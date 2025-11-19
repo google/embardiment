@@ -1,16 +1,25 @@
 {
   "dependencies": {
-    "com.unity.ai.navigation": "2.0.7",
-    "com.unity.collab-proxy": "2.10.1",
+    "com.google.xr.extensions": "file:com.google.xr.extensions.tgz",
+    "com.google.xr.embardiment": "file:../../../unity/Packages/com.google.xr.embardiment",
+    "com.unity.ai.navigation": "2.0.8",
+    "com.unity.collab-proxy": "2.8.2",
     "com.unity.ide.rider": "3.0.36",
     "com.unity.ide.visualstudio": "2.0.23",
     "com.unity.inputsystem": "1.14.0",
+    "com.unity.mobile.android-logcat": "1.4.5",
     "com.unity.multiplayer.center": "1.0.0",
-    "com.unity.render-pipelines.universal": "17.0.4",
+    "com.unity.render-pipelines.universal": "17.1.0",
     "com.unity.test-framework": "1.5.1",
     "com.unity.timeline": "1.8.7",
     "com.unity.ugui": "2.0.0",
-    "com.unity.visualscripting": "1.9.6",
+    "com.unity.visualscripting": "1.9.7",
+    "com.unity.xr.androidxr-openxr": "1.0.0",
+    "com.unity.xr.compositionlayers": "2.0.0",
+    "com.unity.xr.hands": "1.5.1",
+    "com.unity.xr.interaction.toolkit": "3.1.2",
+    "com.unity.xr.management": "4.5.1",
+    "com.unity.xr.openxr": "1.14.3",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
@@ -42,18 +51,18 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.google.xr.embardiment": "1.0.0-pre"
+    "com.unity.modules.xr": "1.0.0"
   },
   "scopedRegistries": [
     {
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.dbrizov.naughtyattributes",
-        "com.google.external-dependency-manager",
-        "com.google.xr.embardiment"
-      ]
+        "openupm.com",
+        "com.google",
+        "com.dbrizov"
+      ],
+      "overrideBuiltIns": true
     }
   ]
 }

@@ -15,16 +15,17 @@
       "url": "https://package.openupm.com"
     },
     "com.google.xr.embardiment": {
-      "version": "file:../../../unity/Packages/com.google.xr.embardiment",
+      "version": "1.0.0-pre",
       "depth": 0,
-      "source": "local",
+      "source": "registry",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.2.1",
         "com.unity.sharp-zip-lib": "1.3.9",
         "com.unity.textmeshpro": "3.0.6",
         "com.dbrizov.naughtyattributes": "2.1.4",
         "com.google.external-dependency-manager": "1.2.186"
-      }
+      },
+      "url": "https://package.openupm.com"
     },
     "com.google.xr.extensions": {
       "version": "file:com.google.xr.extensions.tgz",

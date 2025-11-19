@@ -10,7 +10,7 @@
 
 Embardiment is a user-friendly Unity Package for adding AI functionality to Unity projects, with built native compatibility for Android XR devices.
 
-<img src="./docs/llm-in-editor.gif" width="320">
+<img src="./docs/llm-in-editor.gif" width="320" />
 
 It provides support the following features and following platforms:
 
@@ -40,15 +40,15 @@ The following example boilerplate projects include Embardiment and various proje
 
 * [Android XR](./examples/android-xr)
 
-<img src="./docs/embardiment-collated.gif" width="365"> <img src="./docs/samsung-xr-live.gif" width="300">
+<img src="./docs/samsung-xr-live.gif" width="300" />
 
 * [Android Mobile](./examples/andorid-mobile)
 
-<img src="./docs/android-chatbot.gif" width="300"/>
+<img src="./docs/android-chatbot.gif" width="300" />
 
 * [Desktop](./examples/desktop)
 
-<img src="./docs/llm-in-editor.gif" width="300"/>
+<img src="./docs/llm-in-editor.gif" width="300" />
 
 
 **Option 2: Via Open UPM**

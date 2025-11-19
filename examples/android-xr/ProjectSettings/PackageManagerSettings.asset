@@ -31,9 +31,9 @@ MonoBehaviour:
     m_Name: package.openupm.com
     m_Url: https://package.openupm.com
     m_Scopes:
-    - openupm.com
-    - com.google
-    - com.dbrizov
+    - com.dbrizov.naughtyattributes
+    - com.google.external-dependency-manager
+    - com.google.xr.embardiment
     m_IsDefault: 0
     m_Capabilities: 0
     m_ConfigSource: 4
