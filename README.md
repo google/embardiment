@@ -10,7 +10,7 @@
 
 Embardiment is a user-friendly Unity Package for adding AI functionality to Unity projects, with built native compatibility for Android XR devices.
 
-<img src="./docs/embardiment-collated.gif" width="385"> <img src="./docs/llm-in-editor.gif" width="320">
+<img src="./docs/llm-in-editor.gif" width="320">
 
 It provides support the following features and following platforms:
 
