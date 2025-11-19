@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/DEMO Embardiment Document-Aware Agent.unity
+    guid: ffdee4e8a40a4944fadae08cc0a48ec0
+  - enabled: 0
+    path: Assets/DEMO Embardiment Message Relay.unity
+    guid: de04619709f5e854d9eda1e76db460ae
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 8d2280e7813006d4aaadfa6349daa8aa, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: e6c6c3d868be62c49a0a0b47afd0b87a, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: f4856c56ec4978640920e43f9d5801b5, type: 2}
+  m_UseUCBPForAssetBundles: 0

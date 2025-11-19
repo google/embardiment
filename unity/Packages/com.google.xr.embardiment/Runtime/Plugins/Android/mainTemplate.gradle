@@ -1,0 +1,78 @@
+// Copyright 2025 The Embardiment Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+apply plugin: 'com.android.library'
+apply from: '../shared/keepUnitySymbols.gradle'
+**APPLY_PLUGINS**
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+// Android Resolver Dependencies Start
+    implementation 'com.google.ai.edge.aicore:aicore:0.0.1-exp02' // Packages/com.google.xr.embardiment/Editor/LlmDependencies.xml:19
+    implementation 'com.google.mlkit:text-recognition:16.0.1' // Packages/com.google.xr.embardiment/Editor/OcrDependencies.xml:19
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0' // Packages/com.google.xr.embardiment/Editor/LlmDependencies.xml:21
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0' // Packages/com.google.xr.embardiment/Editor/LlmDependencies.xml:20
+// Android Resolver Dependencies End
+**DEPS**}
+
+// Android Resolver Exclusions Start
+android {
+  packaging {
+      exclude ('/lib/armeabi/*' + '*')
+      exclude ('/lib/armeabi-v7a/*' + '*')
+      exclude ('/lib/mips/*' + '*')
+      exclude ('/lib/mips64/*' + '*')
+      exclude ('/lib/x86/*' + '*')
+      exclude ('/lib/x86_64/*' + '*')
+  }
+}
+// Android Resolver Exclusions End
+android {
+    namespace "com.unity3d.player"
+    ndkPath "**NDKPATH**"
+    ndkVersion "**NDKVERSION**"
+
+    compileSdk **APIVERSION**
+    buildToolsVersion = "**BUILDTOOLS**"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        minSdk **MINSDK**
+        targetSdk **TARGETSDK**
+        ndk {
+            abiFilters **ABIFILTERS**
+            debugSymbolLevel **DEBUGSYMBOLLEVEL**
+        }
+        versionCode **VERSIONCODE**
+        versionName '**VERSIONNAME**'
+        consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
+**DEFAULT_CONFIG_SETUP**
+    }
+
+    lint {
+        abortOnError false
+    }
+
+    androidResources {
+        noCompress = **BUILTIN_NOCOMPRESS** + unityStreamingAssets.tokenize(', ')
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }**PACKAGING**
+}
+**IL_CPP_BUILD_SETUP**
+**SOURCE_BUILD_SETUP**
+**EXTERNAL_SOURCES**

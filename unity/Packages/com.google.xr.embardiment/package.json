@@ -1,0 +1,20 @@
+{
+  "name": "com.google.xr.embardiment",
+  "version": "1.0.0-pre",
+  "displayName": "Embardiment",
+  "description": "User-friendly Unity Package for adding AI functionality to Unity projects.  Complete documentation available at the **[main Embardiment Github repo](https://TODO.com)**",
+  "unity": "6000.0",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.unity.sharp-zip-lib": "1.3.9",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.dbrizov.naughtyattributes": "2.1.4",
+    "com.google.external-dependency-manager": "1.2.186"
+  },
+  "author": {
+    "name": "Google LLC",
+    "email": "",
+    "url": ""
+  },
+  "license": "Apache-2.0"
+}

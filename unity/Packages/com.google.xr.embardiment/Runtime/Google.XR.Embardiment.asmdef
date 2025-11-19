@@ -1,0 +1,20 @@
+{
+    "name": "Google.XR.Embardiment",
+    "rootNamespace": "Google.XR.Embardiment",
+    "references": [
+        "Newtonsoft.Json",
+        "Unity.SharpZipLib",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "NaughtyAttributes.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
