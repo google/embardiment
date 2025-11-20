@@ -27,7 +27,7 @@ namespace Google.XR.Embardiment
     [ExecuteInEditMode]
     public class GeminiTts : MonoBehaviour
     {
-        private static readonly string _geminiTtsEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+        private static readonly string _geminiTtsEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent";
 
         public string VoiceName = "Zephyr";
         public string SourceText;
