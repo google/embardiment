@@ -21,7 +21,7 @@ It provides support the following features and following platforms:
 | **OCR**<br>Optical Character Recognition | ✅ | ✅ |  |
 | **TTS**<br>Text-to-Speech | ✅ |  | ✅ |
 
-These features allow for any research team to build from a full on-device to full on-cloud agents. The matrix of features in this toolkit allows for agents that don't necessarilly need to connect to the cloud, built on top of Gemini Nano and native Android capabilities, this way being privacy preserving for particular academic experiments. And/or much more economic for students to build on class without API keys. The toolkit also allows for high end agents that rely on the latest capabilities of top class AI cloud models like Gemini.
+These features allow for any research team to build from a full on-device to full on-cloud agents. The matrix of features in this toolkit allows for agents that don't necessarily need to connect to the cloud, built on top of Gemini Nano and native Android capabilities, this way being privacy preserving for particular academic experiments. And/or much more economic for students to build on class without API keys. The toolkit also allows for high end agents that rely on the latest capabilities of top class AI cloud models like Gemini.
 
 EmBARDiment is an advanced implementation of our IEEE VR'25 paper:
 ```
