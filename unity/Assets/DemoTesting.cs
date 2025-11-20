@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Google.XR.Embardiment;
@@ -22,9 +23,21 @@ public class DemoTesting : MonoBehaviour
 {
     public Texture2D TextureToOcr;
     public AudioClip AudioClipToAsr;
-
     public List<MonoBehaviour> BehaviourList;
-    public int SelectedBehaviourIndex = 0;
+    public TMPro.TextMeshProUGUI OutputText;
+    private int _selectedBehaviourIndex = 0;
+
+    public MonoBehaviour SelectedBehaviour
+    {
+        get
+        {
+            if (BehaviourList != null && BehaviourList.Count > 0)
+            {
+                return BehaviourList[_selectedBehaviourIndex];
+            }
+            return null;
+        }
+    }
 
     private void Start()
     {
@@ -35,491 +48,330 @@ public class DemoTesting : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
+        HandleKey(Key.LeftArrow, "Previous prefab", () =>
         {
-            SelectedBehaviourIndex--;
-            if (SelectedBehaviourIndex < 0)
+            _selectedBehaviourIndex--;
+            if (_selectedBehaviourIndex < 0)
             {
-                SelectedBehaviourIndex = BehaviourList.Count - 1;
+                _selectedBehaviourIndex = BehaviourList.Count - 1;
             }
-            MyLog($"Changed to {BehaviourList[SelectedBehaviourIndex].GetType().Name}");
+            MyLog($"Changed to {SelectedBehaviour.name}");
+        });
+        HandleKey(Key.RightArrow, "Next prefab", () =>
+        {
+            _selectedBehaviourIndex++;
+            if (_selectedBehaviourIndex >= BehaviourList.Count)
+            {
+                _selectedBehaviourIndex = 0;
+            }
+            MyLog($"Changed to {SelectedBehaviour.name}");
+        });
+
+        if (SelectedBehaviour is AndroidAsr androidAsr)
+        {
+            ProcessInputVia(androidAsr);
         }
-
-        if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
+        else if (SelectedBehaviour is AndroidLlm androidLlm)
         {
-            SelectedBehaviourIndex++;
-            if (SelectedBehaviourIndex >= BehaviourList.Count)
-            {
-                SelectedBehaviourIndex = 0;
-            }
-            MyLog($"Changed to {BehaviourList[SelectedBehaviourIndex].GetType().Name}");
+            ProcessInputVia(androidLlm);
         }
-
-        if (BehaviourList[SelectedBehaviourIndex] is AndroidAsr androidAsr)
+        else if (SelectedBehaviour is AndroidOcr androidOcr)
         {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                androidAsr.OnComplete.RemoveAllListeners();
-                MyLog("listener added 1");
-                androidAsr.OnComplete.AddListener((myString) =>
-                {
-                    MyLog("from listener1: " + myString);
-                    MyLog("recent:" + androidAsr.RecentTranscription);
-                });
-            }
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                androidAsr.OnComplete.RemoveAllListeners();
-                MyLog("listener added 2");
-                androidAsr.OnComplete.AddListener((myString) =>
-                {
-                    MyLog("from listener2: " + myString);
-                    MyLog("recent:" + androidAsr.RecentTranscription);
-                });
-            }
-            if (Keyboard.current.digit3Key.wasPressedThisFrame)
-            {
-                androidAsr.OpenRecognitionStream();
-                MyLog("no instance callback");
-            }
-            if (Keyboard.current.digit4Key.wasPressedThisFrame)
-            {
-                androidAsr.OpenRecognitionStream((myString) =>
-                {
-                    MyLog("callback: " + myString);
-                });
-            }
+            ProcessInputVia(androidOcr);
         }
-
-        if (BehaviourList[SelectedBehaviourIndex] is AndroidLlm androidLlm)
+        else if (SelectedBehaviour is AndroidTts androidTts)
         {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                MyLog("Listener1");
-                androidLlm.OnComplete.RemoveAllListeners();
-                androidLlm.OnComplete.AddListener(response =>
-                {
-                    MyLog("LLM Response 1: " + response);
-                });
-            }
-
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                MyLog("Listener2");
-                androidLlm.OnComplete.RemoveAllListeners();
-                androidLlm.OnComplete.AddListener(response =>
-                {
-                    MyLog("2 handler" + androidLlm.RecentGeneratedText);
-                });
-            }
-
-            if (Keyboard.current.qKey.wasPressedThisFrame)
-            {
-                MyLog("Setting temperature to 0.1");
-                androidLlm.Temperature = 0.1f;
-            }
-            if (Keyboard.current.wKey.wasPressedThisFrame)
-            {
-                MyLog("Setting temperature to 0.9");
-                androidLlm.Temperature = 0.9f;
-            }
-            if (Keyboard.current.eKey.wasPressedThisFrame)
-            {
-                MyLog("Setting topK to 1");
-                androidLlm.TopK = 1;
-            }
-            if (Keyboard.current.rKey.wasPressedThisFrame)
-            {
-                MyLog("Setting topK to 32");
-                androidLlm.TopK = 32;
-            }
-            if (Keyboard.current.tKey.wasPressedThisFrame)
-            {
-                MyLog("Setting maxOutputTokens to 64");
-                androidLlm.MaxOutputTokens = 64;
-            }
-            if (Keyboard.current.yKey.wasPressedThisFrame)
-            {
-                MyLog("Setting maxOutputTokens to 512");
-                androidLlm.MaxOutputTokens = 512;
-            }
-
-            if (Keyboard.current.aKey.wasPressedThisFrame)
-            {
-                MyLog("asking about france");
-                androidLlm.SendPrompt("What is the capital of France?  Reply with only 1 word");
-            }
-            if (Keyboard.current.sKey.wasPressedThisFrame)
-            {
-                MyLog("asking for a joke");
-                androidLlm.SendPrompt("Tell me a short joke, no longer than 15 words");
-            }
-            if (Keyboard.current.dKey.wasPressedThisFrame)
-            {
-                MyLog("asking about earth");
-                androidLlm.SendPrompt("Tell a short trivial fact about the earth");
-            }
+            ProcessInputVia(androidTts);
         }
-
-        if (BehaviourList[SelectedBehaviourIndex] is AndroidOcr androidOcr)
+        else if (SelectedBehaviour is DesktopOcr desktopOcr)
         {
-            var touchscreen = Touchscreen.current;
-            if (touchscreen != null && touchscreen.primaryTouch.press.wasPressedThisFrame)
-            {
-                Vector2 touchPos = touchscreen.primaryTouch.position.ReadValue();
-
-                // Top third of the screen
-                if (touchPos.y > Screen.height * 2 / 3.0f)
-                {
-                    MyLog("Listener replaced 1");
-                    androidOcr.OnComplete.RemoveAllListeners();
-                    androidOcr.OnComplete.AddListener((response) =>
-                    {
-                        MyLog("Listener 1");
-                        MyLog("OCR Complete. Full Text: " + response.FullText);
-
-                        foreach (var block in response.TextBlocks)
-                        {
-                            MyLog("Block: " + block.Text);
-                            foreach (var line in block.Lines)
-                            {
-                                MyLog("  Line: " + line.Text);
-                            }
-                        }
-                    });
-                }
-                // Middle third of the screen
-                else if (touchPos.y > Screen.height / 3.0f)
-                {
-                    MyLog("Listener replaced 2");
-                    androidOcr.OnComplete.RemoveAllListeners();
-                    androidOcr.OnComplete.AddListener((response) =>
-                    {
-                        MyLog("Listener 2");
-                    });
-                }
-                // Bottom third of the screen
-                else
-                {
-                    MyLog("Recognizing text from texture...");
-                    androidOcr.RecognizeText(TextureToOcr);
-                }
-            }
+            ProcessInputVia(desktopOcr);
         }
-        if (BehaviourList[SelectedBehaviourIndex] is AndroidTts androidTts)
+        else if (SelectedBehaviour is GeminiASR geminiAsr)
         {
-            string sentence1 = "The quick brown fox jumped over the lazy dogs";
-            string sentence2 = "Lorem ipsum dolor sit amet";
-
-            if (Keyboard.current.lKey.wasPressedThisFrame)
-            {
-                MyLog("Listeners added");
-                androidTts.OnSpeechGenerated.RemoveAllListeners();
-                androidTts.OnDoneTalking.RemoveAllListeners();
-                androidTts.OnSpeechGenerated.AddListener(() => MyLog("Event: Speech generation complete."));
-                androidTts.OnDoneTalking.AddListener(() => MyLog("Event: Finished talking."));
-            }
-
-            if (Keyboard.current.qKey.wasPressedThisFrame)
-            {
-                MyLog("Stopping speech.");
-                androidTts.Stop();
-            }
-
-            if (Keyboard.current.wKey.wasPressedThisFrame)
-            {
-                MyLog("sentence 1 loaded");
-                androidTts.SourceText = sentence1;
-            }
-
-            if (Keyboard.current.eKey.wasPressedThisFrame)
-            {
-                MyLog("sentence 2 loaded");
-                androidTts.SourceText = sentence2;
-            }
-
-            if (Keyboard.current.rKey.wasPressedThisFrame)
-            {
-                MyLog("speaking preloaded text");
-                androidTts.Speak();
-            }
-
-            if (Keyboard.current.aKey.wasPressedThisFrame)
-            {
-                MyLog("AndroidTTS GetVoiceList");
-                string[] voiceList = androidTts.GetVoiceList();
-                MyLog("AndroidTTS GetVoiceList: " + voiceList[0]);
-                MyLog("AndroidTTS GetVoiceList: " + voiceList[1]);
-                MyLog("AndroidTTS GetVoiceList: " + voiceList[2]);
-                MyLog("AndroidTTS GetVoiceList: " + voiceList.Length);
-            }
-
-            if (Keyboard.current.sKey.wasPressedThisFrame)
-            {
-                androidTts.VoiceIndex = 0;
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.dKey.wasPressedThisFrame)
-            {
-                androidTts.VoiceIndex = 1;
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.fKey.wasPressedThisFrame)
-            {
-                androidTts.VoiceIndex = 2;
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                androidTts.VoiceIndex = -1;
-                androidTts.Language = "en-US";
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                androidTts.VoiceIndex = -1;
-                androidTts.Language = "en-AU";
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.digit3Key.wasPressedThisFrame)
-            {
-                androidTts.VoiceIndex = -1;
-                androidTts.Language = "en-GB";
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.digit0Key.isPressed)
-            {
-                MyLog("AndroidTTS is speaking: " + androidTts.IsSpeaking);
-            }
-
-            if (Keyboard.current.zKey.wasPressedThisFrame)
-            {
-                androidTts.Pitch = 0.5f;
-                androidTts.Speed = 0.5f;
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.xKey.wasPressedThisFrame)
-            {
-                androidTts.Pitch = 1;
-                androidTts.Speed = 1;
-                androidTts.Speak(sentence1);
-            }
-
-            if (Keyboard.current.cKey.wasPressedThisFrame)
-            {
-                androidTts.Pitch = 2;
-                androidTts.Speed = 2;
-                androidTts.Speak(sentence1);
-            }
+            ProcessInputVia(geminiAsr);
         }
-
-        if (BehaviourList[SelectedBehaviourIndex] is DesktopOcr desktopOcr)
+        else if (SelectedBehaviour is GeminiLlm geminiLlm)
         {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                MyLog("Listener replaced 1");
-                desktopOcr.OnComplete.RemoveAllListeners();
-                desktopOcr.OnComplete.AddListener((response) =>
-                {
-                    MyLog("Listener 1");
-                    MyLog("OCR Complete. Full Text: " + response.FullText);
-                    if (response.WordBoxes != null)
-                    {
-                        MyLog("Word Boxes Found: " + response.WordBoxes.Length);
-                        MyLog("X: " + response.WordBoxes[0].X);
-                        MyLog("Y: " + response.WordBoxes[0].Y);
-                        MyLog("W: " + response.WordBoxes[0].Width);
-                        MyLog("H: " + response.WordBoxes[0].Height);
-                        MyLog("Word: " + response.WordBoxes[0].Word);
-                    }
-                });
-            }
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                MyLog("Listener replaced 2");
-                desktopOcr.OnComplete.RemoveAllListeners();
-                desktopOcr.OnComplete.AddListener((response) =>
-                {
-                    MyLog("Listener 2");
-                });
-            }
-            if (Keyboard.current.aKey.wasPressedThisFrame)
-            {
-                MyLog("Recognizing text from texture...");
-                desktopOcr.RecognizeText(TextureToOcr);
-            }
-            if (Keyboard.current.sKey.wasPressedThisFrame)
-            {
-                desktopOcr.UseCache = !desktopOcr.UseCache;
-                MyLog("Toggled useCache to: " + desktopOcr.UseCache);
-            }
-            if (Keyboard.current.dKey.wasPressedThisFrame)
-            {
-                desktopOcr.ClearCache();
-                MyLog("Cache cleared. The 'useCache' setting is currently: " + desktopOcr.UseCache);
-            }
+            ProcessInputVia(geminiLlm);
         }
-
-
-        if (BehaviourList[SelectedBehaviourIndex] is GeminiASR geminiAsr)
+        else if (SelectedBehaviour is GeminiTts geminiTts)
         {
-            if (Keyboard.current.aKey.wasPressedThisFrame)
-            {
-                MyLog("Resetting onComplete");
-                geminiAsr.OnComplete.RemoveAllListeners();
-                geminiAsr.OnComplete.AddListener(transcription =>
-                {
-                    MyLog("Transcription complete: " + transcription);
-                });
-            }
-
-            if (Keyboard.current.sKey.wasPressedThisFrame)
-            {
-                MyLog("Resetting onComplete (2)");
-                geminiAsr.OnComplete.RemoveAllListeners();
-                geminiAsr.OnComplete.AddListener(transcription =>
-                {
-                    MyLog("Transcription complete: " + geminiAsr.RecentTranscription);
-                    MyLog("2");
-                });
-            }
-
-            if (Keyboard.current.dKey.wasPressedThisFrame)
-            {
-                geminiAsr.RequestRecognition(AudioClipToAsr);
-            }
-
-            if (Keyboard.current.spaceKey.wasPressedThisFrame)
-            {
-                MyLog("Starting recording...");
-                geminiAsr.StartRecording();
-            }
-
-            if (Keyboard.current.spaceKey.wasReleasedThisFrame)
-            {
-                MyLog("Stopping recording and sending for transcription...");
-                geminiAsr.StopRecordingAndSend();
-            }
+            ProcessInputVia(geminiTts);
         }
-        if (BehaviourList[SelectedBehaviourIndex] is GeminiLlm geminiLlm)
+    }
+
+    private void HandleKey(Key key, string description, Action action)
+    {
+        if (Keyboard.current[key].wasPressedThisFrame)
         {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                MyLog("Listener1");
-                geminiLlm.OnComplete.RemoveAllListeners();
-                geminiLlm.OnComplete.AddListener(response =>
-                {
-                    MyLog("LLM Response 1: " + response);
-                });
-            }
-
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                MyLog("Listener2");
-                geminiLlm.OnComplete.RemoveAllListeners();
-                geminiLlm.OnComplete.AddListener(response =>
-                {
-                    MyLog("2 handler" + geminiLlm.RecentGeneratedText);
-                });
-            }
-
-            if (Keyboard.current.aKey.wasPressedThisFrame)
-            {
-                geminiLlm.SendPrompt("What is the capital of France?");
-            }
-        }
-        if (BehaviourList[SelectedBehaviourIndex] is GeminiTts geminiTts)
-        {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                MyLog("Listener1");
-                geminiTts.OnSpeechGenerated.RemoveAllListeners();
-                geminiTts.OnSpeechGenerated.AddListener(clip =>
-                {
-                    MyLog("Audio generated. Playing clip.");
-                    AudioSource source = GetComponent<AudioSource>();
-                    if (source == null)
-                    {
-                        MyLog("Adding temporary AudioSource to play clip.");
-                        source = gameObject.AddComponent<AudioSource>();
-                    }
-                    if (clip != null)
-                    {
-                        source.PlayOneShot(clip);
-                    }
-                });
-                geminiTts.OnDoneTalking.RemoveAllListeners();
-                geminiTts.OnDoneTalking.AddListener(() =>
-                {
-                    MyLog("Event: done talking");
-                });
-            }
-
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                MyLog("Listener2");
-                geminiTts.OnSpeechGenerated.RemoveAllListeners();
-                geminiTts.OnSpeechGenerated.AddListener(clip =>
-                {
-                    MyLog("Returned!");
-                });
-                geminiTts.OnDoneTalking.RemoveAllListeners();
-                geminiTts.OnDoneTalking.AddListener(() =>
-                {
-                    MyLog("Event: done talking from listener 2");
-                });
-            }
-
-            if (Keyboard.current.qKey.wasPressedThisFrame)
-            {
-                geminiTts.Stop();
-                MyLog("stopping speech");
-            }
-
-
-            string sentence = "The quick brown fox jumped over the lazy dogs.";
-
-            if (Keyboard.current.aKey.wasPressedThisFrame)
-            {
-                geminiTts.VoiceName = "Orus";
-                MyLog("Generating Audio");
-                geminiTts.GenerateAudio(sentence);
-            }
-
-            if (Keyboard.current.sKey.wasPressedThisFrame)
-            {
-                geminiTts.VoiceName = "Gacrux";
-                MyLog("Requesting speech");
-                geminiTts.Speak(sentence);
-            }
-
-            if (Keyboard.current.dKey.wasPressedThisFrame)
-            {
-                geminiTts.VoiceName = "Leda";
-                MyLog("Requesting speech");
-                geminiTts.Speak(sentence);
-            }
-
-            if (Keyboard.current.eKey.wasPressedThisFrame)
-            {
-                geminiTts.VoiceName = "Leda";
-                MyLog("Requesting speech");
-                geminiTts.Speak("Say with a drippingly sarcastic tone: Sure, yeah right!");
-            }
-
+            MyLog(description);
+            action.Invoke();
         }
     }
 
     private void MyLog(string message)
     {
-        string behaviourName = BehaviourList[SelectedBehaviourIndex].GetType().Name;
-        Debug.Log($"DEMO TESTING: {behaviourName} - {message}");
+        string outputMessage = $"DEMO TESTING: {SelectedBehaviour.name} - {message}";
+        Debug.Log(outputMessage);
+        OutputText.text = outputMessage + "\n" + OutputText.text;
+    }
+
+    private void ProcessInputVia(AndroidAsr androidAsr)
+    {
+        HandleKey(Key.Digit1, "Adding listener 1", () =>
+        {
+            androidAsr.OnComplete.RemoveAllListeners();
+            androidAsr.OnComplete.AddListener((myString) =>
+            {
+                MyLog("From listener1: " + myString);
+                MyLog("Recent:" + androidAsr.RecentTranscription);
+            });
+        });
+        HandleKey(Key.Digit2, "Adding listener 2", () =>
+        {
+            androidAsr.OnComplete.RemoveAllListeners();
+            androidAsr.OnComplete.AddListener((myString) =>
+            {
+                MyLog("From listener2: " + myString);
+                MyLog("Recent:" + androidAsr.RecentTranscription);
+            });
+        });
+
+        HandleKey(Key.A, "Opening Recognition, no instance callback", () => androidAsr.OpenRecognitionStream());
+        HandleKey(Key.S, "Opening Recognition with instance callback", () =>
+        {
+            androidAsr.OpenRecognitionStream((myString) =>
+            {
+                MyLog("Callback: " + myString);
+            });
+        });
+    }
+
+    private void ProcessInputVia(AndroidLlm androidLlm)
+    {
+        HandleKey(Key.Digit1, "Adding listener 1", () =>
+        {
+            androidLlm.OnComplete.RemoveAllListeners();
+            androidLlm.OnComplete.AddListener(response => MyLog("From listener 1: " + response));
+        });
+        HandleKey(Key.Digit2, "Adding listener 2", () =>
+        {
+            androidLlm.OnComplete.RemoveAllListeners();
+            androidLlm.OnComplete.AddListener(response => MyLog("From listener 2: " + response));
+        });
+
+        HandleKey(Key.Q, "Setting Temperature to 0.1", () => { androidLlm.Temperature = 0.1f; });
+        HandleKey(Key.W, "Setting Temperature to 0.9", () => { androidLlm.Temperature = 0.9f; });
+        HandleKey(Key.E, "Setting TopK to 1", () => { androidLlm.TopK = 1; });
+        HandleKey(Key.R, "Setting TopK to 32", () => { androidLlm.TopK = 32; });
+        HandleKey(Key.T, "Setting MaxOutputTokens to 64", () => { androidLlm.MaxOutputTokens = 64; });
+        HandleKey(Key.Y, "Setting MaxOutputTokens to 512", () => { androidLlm.MaxOutputTokens = 512; });
+
+        HandleKey(Key.A, "Asking about France", () => androidLlm.SendPrompt("What is the capital of France?  Reply with only 1 word"));
+        HandleKey(Key.S, "Asking for a joke", () => androidLlm.SendPrompt("Tell me a short joke, no longer than 15 words"));
+        HandleKey(Key.D, "Asking about earth", () => androidLlm.SendPrompt("Tell a short trivial fact about the earth"));
+    }
+
+    private void ProcessInputVia(AndroidOcr androidOcr)
+    {
+        HandleKey(Key.Digit1, "Adding listener 1", () =>
+        {
+            androidOcr.OnComplete.RemoveAllListeners();
+            androidOcr.OnComplete.AddListener((response) =>
+            {
+                MyLog("From listener 1. OCR Complete. Full Text: " + response.FullText);
+                foreach (var block in response.TextBlocks)
+                {
+                    MyLog("Block: " + block.Text);
+                    foreach (var line in block.Lines)
+                    {
+                        MyLog("  Line: " + line.Text);
+                    }
+                }
+            });
+        });
+        HandleKey(Key.Digit2, "Adding listener 2", () =>
+        {
+            androidOcr.OnComplete.RemoveAllListeners();
+            androidOcr.OnComplete.AddListener((response) => MyLog("Listener 2"));
+        });
+
+        HandleKey(Key.A, "Recognizing text from texture...", () => androidOcr.RecognizeText(TextureToOcr));
+    }
+
+    private void ProcessInputVia(AndroidTts androidTts)
+    {
+        HandleKey(Key.Digit1, "Adding listeners 1", () =>
+        {
+            androidTts.OnSpeechGenerated.RemoveAllListeners();
+            androidTts.OnSpeechGenerated.AddListener(() => MyLog("Speech generation complete."));
+            androidTts.OnDoneTalking.RemoveAllListeners();
+            androidTts.OnDoneTalking.AddListener(() => MyLog("Finished talking."));
+        });
+
+        HandleKey(Key.Q, "Sentence 1 loaded", () => androidTts.SourceText = "The quick brown fox jumped over the lazy dogs");
+        HandleKey(Key.W, "Sentence 2 loaded", () => androidTts.SourceText = "Lorem ipsum dolor sit amet");
+        HandleKey(Key.E, "Voice -1", () => androidTts.VoiceIndex = -1);
+        HandleKey(Key.R, "Voice 0", () => androidTts.VoiceIndex = 0);
+        HandleKey(Key.T, "Voice 1", () => androidTts.VoiceIndex = 1);
+        HandleKey(Key.Y, "Language en-US", () => androidTts.Language = "en-US");
+        HandleKey(Key.U, "Language en-AU", () => androidTts.Language = "en-AU");
+        HandleKey(Key.I, "Language en-GB", () => androidTts.Language = "en-GB");
+        HandleKey(Key.O, "Pitch and speed: 0.5", () =>
+        {
+            androidTts.Pitch = 0.5f;
+            androidTts.Speed = 0.5f;
+        });
+        HandleKey(Key.P, "Pitch and speed: 1", () =>
+        {
+            androidTts.Pitch = 1;
+            androidTts.Speed = 1;
+        });
+        HandleKey(Key.LeftBracket, "Pitch and speed: 2", () =>
+        {
+            androidTts.Pitch = 2;
+            androidTts.Speed = 2;
+        });
+
+        HandleKey(Key.A, "Speaking preloaded text", () => androidTts.Speak());
+        HandleKey(Key.S, "Calling IsSpeaking", () => MyLog("Speaking state: " + androidTts.IsSpeaking));
+        HandleKey(Key.D, "Stopping speech", () => androidTts.Stop());
+        HandleKey(Key.F, "Retriving voice list", () =>
+        {
+            string[] voiceList = androidTts.GetVoiceList();
+            MyLog("GetVoiceList 0: " + voiceList[0]);
+            MyLog("GetVoiceList 1: " + voiceList[1]);
+            MyLog("GetVoiceList 2: " + voiceList[2]);
+            MyLog("GetVoiceList length: " + voiceList.Length);
+        });
+    }
+
+    private void ProcessInputVia(DesktopOcr desktopOcr)
+    {
+        HandleKey(Key.Digit1, "Adding listener 1", () =>
+        {
+            desktopOcr.OnComplete.RemoveAllListeners();
+            desktopOcr.OnComplete.AddListener((response) =>
+            {
+                MyLog("Listener 1");
+                MyLog("OCR Complete. Full Text: " + response.FullText);
+                if (response.WordBoxes != null)
+                {
+                    MyLog("Word Boxes Found: " + response.WordBoxes.Length);
+                    MyLog("X: " + response.WordBoxes[0].X);
+                    MyLog("Y: " + response.WordBoxes[0].Y);
+                    MyLog("W: " + response.WordBoxes[0].Width);
+                    MyLog("H: " + response.WordBoxes[0].Height);
+                    MyLog("Word: " + response.WordBoxes[0].Word);
+                }
+            });
+        });
+        HandleKey(Key.Digit2, "Adding listener 2", () =>
+        {
+            desktopOcr.OnComplete.RemoveAllListeners();
+            desktopOcr.OnComplete.AddListener((response) =>
+            {
+                MyLog("Listener 2");
+            });
+        });
+
+        HandleKey(Key.Q, "UseCache = true", () => desktopOcr.UseCache = true);
+        HandleKey(Key.W, "UseCache = false", () => desktopOcr.UseCache = false);
+
+        HandleKey(Key.A, "Recognizing text from texture...", () => desktopOcr.RecognizeText(TextureToOcr));
+        HandleKey(Key.S, "Clearing cache", () => desktopOcr.ClearCache());
+    }
+
+    private void ProcessInputVia(GeminiASR geminiAsr)
+    {
+        HandleKey(Key.Digit1, "Adding listener 1", () =>
+        {
+            geminiAsr.OnComplete.RemoveAllListeners();
+            geminiAsr.OnComplete.AddListener(transcription =>
+            {
+                MyLog("From listener 1: " + transcription);
+            });
+        });
+        HandleKey(Key.Digit2, "Adding listener 2", () =>
+        {
+            geminiAsr.OnComplete.RemoveAllListeners();
+            geminiAsr.OnComplete.AddListener(transcription =>
+            {
+                MyLog("From listener 2: " + transcription);
+            });
+        });
+
+        HandleKey(Key.A, "Requesting recognition", () => geminiAsr.RequestRecognition(AudioClipToAsr));
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            MyLog("Starting recording...");
+            geminiAsr.StartRecording();
+        }
+        if (Keyboard.current.spaceKey.wasReleasedThisFrame)
+        {
+            MyLog("Stopping recording and sending for transcription...");
+            geminiAsr.StopRecordingAndSend();
+        }
+    }
+
+    private void ProcessInputVia(GeminiLlm geminiLlm)
+    {
+        HandleKey(Key.Digit1, "Adding listener 1", () =>
+        {
+            geminiLlm.OnComplete.RemoveAllListeners();
+            geminiLlm.OnComplete.AddListener(response =>
+            {
+                MyLog("LLM Response 1: " + response);
+            });
+        });
+        HandleKey(Key.Digit2, "Adding listener 2", () =>
+        {
+            geminiLlm.OnComplete.RemoveAllListeners();
+            geminiLlm.OnComplete.AddListener(response =>
+            {
+                MyLog("LLM Response 2: " + response);
+            });
+        });
+        HandleKey(Key.A, "Sending LLM Prompt", () => geminiLlm.SendPrompt("What is the capital of France?"));
+    }
+
+    private void ProcessInputVia(GeminiTts geminiTts)
+    {
+        HandleKey(Key.Digit1, "Adding listeners 1", () =>
+        {
+            geminiTts.OnSpeechGenerated.RemoveAllListeners();
+            geminiTts.OnSpeechGenerated.AddListener(clip =>
+            {
+                MyLog("Audio generated. Playing clip manually.");
+                geminiTts.GetComponent<AudioSource>().PlayOneShot(clip);
+            });
+            geminiTts.OnDoneTalking.RemoveAllListeners();
+            geminiTts.OnDoneTalking.AddListener(() => MyLog("Event: done talking"));
+        });
+        HandleKey(Key.Digit2, "Adding listeners 2", () =>
+        {
+            geminiTts.OnSpeechGenerated.RemoveAllListeners();
+            geminiTts.OnSpeechGenerated.AddListener(clip =>
+            {
+                MyLog("Returned but not playing yet");
+            });
+            geminiTts.OnDoneTalking.RemoveAllListeners();
+            geminiTts.OnDoneTalking.AddListener(() =>
+            {
+                MyLog("Event: done talking from listener 2");
+            });
+        });
+
+        HandleKey(Key.Q, "Set voice: Orus", () => geminiTts.VoiceName = "Orus");
+        HandleKey(Key.W, "Set voice: Gacrux", () => geminiTts.VoiceName = "Gacrux");
+        HandleKey(Key.E, "Set voice: Leda", () => geminiTts.VoiceName = "Leda");
+
+        string sentence = "The quick brown fox jumped over the lazy dogs.";
+        HandleKey(Key.A, "Generate audio only", () => geminiTts.GenerateAudio(sentence));
+        HandleKey(Key.S, "Requesting speech", () => geminiTts.Speak(sentence));
+        HandleKey(Key.D, "Requesting styled speech", () => geminiTts.Speak("Say with dripping sarcasm: yeah right"));
+        HandleKey(Key.F, "Stop speech", () => geminiTts.Stop());
     }
 }
