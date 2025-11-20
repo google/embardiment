@@ -40,6 +40,7 @@ The following example boilerplate projects include Embardiment and various proje
 
 * [Android XR](./examples/android-xr)
 
+<img src="./docs/eye-tracking-agent.gif" width="300" />
 <img src="./docs/samsung-xr-live.gif" width="300" />
 
 * [Android Mobile](./examples/andorid-mobile)
