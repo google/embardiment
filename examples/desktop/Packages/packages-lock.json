@@ -15,7 +15,7 @@
       "url": "https://package.openupm.com"
     },
     "com.google.xr.embardiment": {
-      "version": "1.0.0-pre",
+      "version": "1.0.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
