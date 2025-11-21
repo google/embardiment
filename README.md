@@ -1,6 +1,6 @@
 # EmBARDiment: a toolkit for AI Agents in Android XR
 
-![Version 1.0.0-pre](https://img.shields.io/badge/Ver-1.0.0--pre-blue)
+![Version 1.0.0](https://img.shields.io/badge/Ver-1.0.0-blue)
 ![Unity v6000.0+](https://img.shields.io/badge/Unity-v6000.0+-blue)
 ![Apache 2.0 License](https://img.shields.io/badge/License-Apache&nbsp;2.0-green)
 

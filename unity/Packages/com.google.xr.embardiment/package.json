@@ -1,8 +1,8 @@
 {
   "name": "com.google.xr.embardiment",
-  "version": "1.0.0-pre",
+  "version": "1.0.0",
   "displayName": "Embardiment",
-  "description": "User-friendly Unity Package for adding AI functionality to Unity projects.  Complete documentation available at the **[main Embardiment Github repo](https://TODO.com)**",
+  "description": "User-friendly Unity Package for adding AI functionality to Unity projects.  Complete documentation available at the **[main Embardiment Github repo](https://github.com/google/embardiment)**",
   "unity": "6000.0",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1",
