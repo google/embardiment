@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/DEMO Embardiment Document-Aware Agent.unity
+    path: Assets/Scenes/DEMO Embardiment Document-Aware Agent.unity
     guid: ffdee4e8a40a4944fadae08cc0a48ec0
   - enabled: 0
-    path: Assets/DEMO Embardiment Message Relay.unity
+    path: Assets/Scenes/DEMO Embardiment Message Relay.unity
     guid: de04619709f5e854d9eda1e76db460ae
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
